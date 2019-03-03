@@ -1,4 +1,5 @@
 ﻿using System;
+using Hawk.Core.Utils;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
@@ -56,7 +57,7 @@ namespace Hawk.ETL.Crawlers
                     {
                         return JsSeriaize(doc.InnerHtml);
                     }
-                    catch (Exception ex)
+                    catch (Exception )
                     {
                         result.Add("text", doc.InnerText);
                         return result;
@@ -95,7 +96,11 @@ namespace Hawk.ETL.Crawlers
         }
         private static bool isBasicType(Object obj)
         {
-            if (obj is int || obj is string || obj is double || obj is bool || obj is Enum || obj == null)
+            if (obj is int || obj is string || obj is double || obj is bool || obj is Enum || obj is Int64)
+            {
+                return true;
+            }
+            if (obj == null)
             {
                 return true;
             }
@@ -211,7 +216,9 @@ namespace Hawk.ETL.Crawlers
         }
         public static object Parse(string code)
         {
-            code = code.Trim();
+                   // code = Regex.Replace(code, "^[\r\n\b]+", "");
+
+            code = code.Replace("\r", "").Replace("\n", "");
             if (code.StartsWith("{") || code.StartsWith("["))
             {
                 return JsonSeriaize(code);
@@ -232,7 +239,7 @@ namespace Hawk.ETL.Crawlers
                     {
                         return JsSeriaize(code);
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
                         return code;
                     }
@@ -246,6 +253,8 @@ namespace Hawk.ETL.Crawlers
         private static object JsonSeriaize(string code)
         {
            dynamic js= JsonConvert.Import(code);
+            if (js.ToString() == "")
+                return code;
             return _JsonSeriaize(js);
         }
 
@@ -310,7 +319,7 @@ namespace Hawk.ETL.Crawlers
             }
             catch (Exception ex)
             {
-                XLogSys.Print.Error("超级模式解析失败 "+ex.Message);                
+                XLogSys.Print.Error(GlobalHelper.Get("key_174")+ex.Message);                
             } 
             return result;
             // return  _Parse2XML(code); 
@@ -353,7 +362,7 @@ namespace Hawk.ETL.Crawlers
                 }
                 catch (Exception ex)
                 {
-                    XLogSys.Print.Debug("尝试转换为json出错：  " + ex.Message);
+                    XLogSys.Print.Debug(GlobalHelper.Get("key_175") + ex.Message);
                 }
             }
             isRealJson = false;
