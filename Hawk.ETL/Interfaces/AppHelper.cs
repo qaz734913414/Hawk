@@ -3,6 +3,7 @@ using System.Collections;
 using Hawk.Core.Utils;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -54,42 +55,47 @@ namespace Hawk.ETL.Interfaces
         public static void LoadLanguage(string url = null,bool isload=true)
         {
             ResourceDictionary langRd = null;
-
+            string config = null;
             if (url == null)
             {
 
-                var config = ConfigFile.GetConfig<DataMiningConfig>().Get<string>("Language");
+                 config = ConfigFile.GetConfig<DataMiningConfig>().Get<string>("Language");
                 if (string.IsNullOrEmpty(config))
                 {
                     CultureInfo currentCultureInfo = CultureInfo.CurrentCulture;
-                    var info = currentCultureInfo.Name;
-                    url = @"Lang\" + info + ".xaml";
+                    config = currentCultureInfo.Name;
+                    url = @"Lang\" + config + ".xaml";
 
                 }
                 else
                 {
-                    url = config;
+                    url = @"Lang\" + config + ".xaml";
                 }
 
             }
 
             try
             {
+                if (!File.Exists(url))
+                {
+                    throw  new FileNotFoundException(url,url);
+                }
                 langRd =
                     Application.LoadComponent(
-                            new Uri(url, UriKind.Relative))
+                            new Uri(url, UriKind.RelativeOrAbsolute))
                         as ResourceDictionary;
                 foreach (var key in langRd.Keys)
                 {
                         TemplateReplace(key, langRd);
 
                 }
-                //ConfigFile.GetConfig().Set("Language", url);
-                
+                ConfigFile.GetConfig<DataMiningConfig>().Set("Language", config);
+
 
             }
-            catch (Exception )
+            catch (Exception ex)
             {
+                XLogSys.Print.Error(ex);
             }
 
             if (langRd != null)

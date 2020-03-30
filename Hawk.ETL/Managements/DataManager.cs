@@ -18,6 +18,7 @@ using Hawk.Core.Utils.MVVM;
 using Hawk.Core.Utils.Plugins;
 using Hawk.ETL.Interfaces;
 using Hawk.ETL.Process;
+using Microsoft.AppCenter.Analytics;
 using Microsoft.Win32;
 
 namespace Hawk.ETL.Managements
@@ -367,7 +368,7 @@ namespace Hawk.ETL.Managements
                     {
                         var file = (items.Connector as FileManager).LastFileName;
                         var name = Path.GetFileNameWithoutExtension(file);
-                        AddDataCollection(dataAll, name);
+                        AddDataCollection(dataAll, name,isCover:true);
                         return;
                     }
                     var excel = PluginProvider.GetObjectInstance<IDataViewer>(GlobalHelper.Get("key_230"));
@@ -463,8 +464,12 @@ namespace Hawk.ETL.Managements
 
                             if (ControlExtended.DockableManager != null)
                             {
-                                ControlExtended.DockableManager.AddDockAbleContent(
-                                    FrmState.Float, r, data.Name + " " + d.Name);
+                                var window = new Window { Title = data.Name + " " + d.Name };
+                                window.WindowState = WindowState.Maximized;
+                                window.Content = r;
+                                window.Activate();
+                                window.ShowDialog();
+                              
                             }
                         });
                     };
@@ -540,8 +545,11 @@ namespace Hawk.ETL.Managements
             dataaction.ChildActions.Add(new Command(
                 GlobalHelper.Get("key_240"), obj =>
                 {
-                    var collection = GetSelectedCollection(obj);
-                    if (collection != null) PropertyGridFactory.GetPropertyWindow(collection).ShowDialog();
+                    var collection = GetSelectedCollection(obj).ToList();
+
+                    if (!collection.Any())
+                        return;
+                        PropertyGridFactory.GetPropertyWindow(collection.FirstOrDefault()).ShowDialog();
                 }, obj => true, "settings"));
             dataaction.ChildActions.Add(new Command(
                 GlobalHelper.Get("key_169"), obj =>
@@ -591,9 +599,9 @@ namespace Hawk.ETL.Managements
                     var data = obj as DataCollection;
                     processManager.CurrentProcessTasks.Add(
                         TemporaryTask<FreeDocument>.AddTempTaskSimple(data.Name + GlobalHelper.Get("key_245"),
-                            dataBaseConnector.InserDataCollection(data), result => dataBaseConnector.RefreshTableNames(),
+                            dataBaseConnector.InserDataCollection(data), null,continueAction: (a) => dataBaseConnector.RefreshTableNames(),
                             count: data.Count/1000));
-                }, icon: "database")).Cast<ICommand>().ToList();
+                },obj=>dataBaseConnector.IsUseable,  icon: "database")).Cast<ICommand>().ToList();
             });
 
 
@@ -708,7 +716,10 @@ namespace Hawk.ETL.Managements
                 return collection;
             }
             var data = new DataCollection(source.ToList()) {Name = collectionName};
-
+            Analytics.TrackEvent( GlobalHelper.Get("key_231"), new Dictionary<string, string> {
+                { "Parameter", collectionName },
+                
+            });
             DataCollections.Add(data);
             return data;
         }

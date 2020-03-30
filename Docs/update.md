@@ -633,3 +633,71 @@ Hawk3 发布
 1. 自动跳转到参数设置，会闪烁 ok
 2. 新建任务时，之前的任务并没有取消 ok
 3. 无法修改github的地址 ok
+
+
+# 2019年3月29日
+1. 空对象过滤器，过滤空内容
+
+1. 时间区间生成改进  ok
+2. 区间数支持format ok
+
+//*[@name="pagepicmap"]
+
+http://www.qnsb.com/fzepaper/site1/qnsb/page/1/2011-01/02/A06/20110102A06_pdf.pdf
+http://www.qnsb.com/fzepaper/site1/qnsb/page/1/2012-01/01/A03/20120101A03_pdf.pdf
+
+
+# 2019年3月31日
+
+1. 无效的mongodb连接s
+2. sqlite插入失败
+3. 英文界面  
+4. 并发写入文件的问题   
+5. 新建工程后，并没有自动连接  ok
+6. xpath不会自动更新，需要手动刷新 ok
+7. 多行文本框不应过长 ok
+8. 提供将网页采集器结果保存为数据表功能 ok
+9. 百度AI
+
+CREATE TABLE DFDSF (diggit_diggnum text,digg_diggit_onclick text,digg_digg_tip_id text,titlelnk text,属性4 text,pfs_src text,a_href text,属性7 text,post_item_foot_lightblue text,属性9 text,article_comment_gray text,article_view_gray text)
+
+
+# 2019年04月02日
+1. 数据清洗单元格，可以默认不换行   ok
+2. xpath转换器的优化，不需刷新即可查找xpath ok
+
+
+
+# 2019年4月28日
+2. 加载市场的单个任务时，会提示找不到任务 ok
+2. 当加载单个任务时，发现与当前名称重复时应当提示 pass
+3. topic_supplier 不存在 ok
+4. 弹出的数据对话框窗口太小 ok
+5. 回补数据即使勾选执行器，也无法执行原有执行器 pass
+6. 提取测试时，无法将数据表写入 ok
+7. 英文界面
+8. 并发写入文件的问题
+9. 新建工程后，并没有自动连接 ok
+
+
+# 2019年5月2日
+1. 当数据表中已经存在同名数据集时，禁止写入 ok
+2. 数据表双击看不到 ok
+3. mongodb 查看帮助提示，更换链接 ok
+4. wiki更新  
+5. 修复图床 ok
+6. sqlite写入表失败  ok
+7. 读取文件数据 应当提供图形化界面  ok
+
+
+# 2019年6月8日
+
+1. 连续N次没有获得数据，应该进行诊断，包括子任务
+2. 自动化命令脚本出错
+
+# 2019年7月12日
+
+1. github无法连接n次后直接拒绝
+2. 获取远程响应  bug
+3. 共享源序列化无效
+4. 数据清洗左侧任务列表，限制文本框最大高度
